@@ -69,6 +69,14 @@ button, input, select { font: inherit; }
 .element-tile:hover { color: #fff; filter: brightness(1.23); transform: translateY(-2px); z-index: 1; }
 .element-tile.not-selected { filter: saturate(.55) brightness(.66); }
 .element-tile[hidden] { display: none; }
+
+.element-tile[style*="#FFFFFF"],
+.element-tile[style*="#ffffff"],
+.element-tile[style*="#00FF00"],
+.element-tile[style*="#00ff00"] {
+  color: #111;
+}
+
 .atomic-number, .atomic-mass { font-size: .61rem; font-variant-numeric: tabular-nums; line-height: 1.1; }
 .element-symbol { font-size: clamp(.94rem, 1.4vw, 1.28rem); line-height: 1; text-align: center; }
 .element-name { font-size: clamp(.48rem, .63vw, .67rem); line-height: 1.1; overflow-wrap: anywhere; text-align: center; }
