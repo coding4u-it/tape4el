@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Tavola periodica{% endblock %}
+{% block content %}
+<section class="page-heading">
+  <div>
+    <p class="eyebrow">Esplora la chimica</p>
+    <h1>Tavola periodica degli elementi</h1>
+    <p class="muted">Seleziona un elemento per consultarne le proprietà e la configurazione elettronica.</p>
+  </div>
+  <form class="search-form" role="search" onsubmit="return false">
+    <label class="sr-only" for="element-search">Cerca un elemento</label>
+    <input id="element-search" type="search" placeholder="Cerca per nome o simbolo…">
+  </form>
+</section>
+
+<section class="filter-panel" aria-label="Filtri della tavola">
+  <label for="color-mode">Colora per</label>
+  <select id="color-mode">
+    <option value="type">Tipo di elemento</option>
+    <option value="group">Gruppo</option>
+    <option value="period">Periodo</option>
+    <option value="block">Blocco</option>
+    <option value="state">Stato fisico</option>
+    <option value="oxidation">Numero di ossidazione</option>
+  </select>
+  <label class="oxidation-control" for="oxidation-value" hidden>N. ossidazione</label>
+  <input class="oxidation-control" id="oxidation-value" type="range" min="-4" max="8" value="0" hidden>
+  <output class="oxidation-control" id="oxidation-label" for="oxidation-value" hidden>0</output>
+  <span class="filter-hint">Usa la ricerca o il colore per esplorare gli elementi.</span>
+</section>
+
+<div class="table-scroll" aria-label="Tavola periodica scorrevole">
+  <div class="periodic-grid">
+    {% for group in range(1, 19) %}
+      <div class="group-label" style="grid-column: {{ group + 1 }}; grid-row: 1">{{ group }}</div>
+    {% endfor %}
+    {% for period in range(1, 9) %}
+      <div class="period-label" style="grid-column: 1; grid-row: {{ period + 1 }}">{{ period }}</div>
+    {% endfor %}
+    <div class="period-label series-label" style="grid-column: 1; grid-row: 10">La–Lu</div>
+    <div class="period-label series-label" style="grid-column: 1; grid-row: 11">Ac–Lr</div>
+    {% for element in elements %}
+      <a class="element-tile"
+         href="{{ url_for('element_detail', atomic_number=element.NumAtomico) }}"
+         style="grid-column: {{ element.grid_column + 1 }}; grid-row: {{ element.grid_row + 1 }}; --tile-color: {{ element.default_color }}"
+         data-symbol="{{ element.Simbolo|lower }}"
+         data-name="{{ element.Nome|lower }}"
+         data-type="{{ element.tipo }}"
+         data-state="{{ element.stato }}"
+         data-block="{{ element.blocco }}"
+         data-group="{{ element.Gruppo }}"
+         data-period="{{ element.Periodo }}"
+         data-oxidation="{{ element.ossidazioni|join(',') }}"
+         data-color-type="{{ element.color_type }}"
+         data-color-state="{{ element.color_state }}"
+         data-color-block="{{ element.color_block }}"
+         data-color-group="{{ element.color_group }}"
+         data-color-period="{{ element.color_period }}"
+         data-color-oxidation="{{ element.color_oxidation|tojson|forceescape }}"
+         title="{{ element.Nome }} — numero atomico {{ element.NumAtomico }}">
+        <span class="atomic-number">{{ element.NumAtomico }}</span>
+        <strong class="element-symbol">{{ element.Simbolo }}</strong>
+        <span class="element-name">{{ element.Nome }}</span>
+        <span class="atomic-mass">{{ "%.3f"|format(element.MM) }}</span>
+      </a>
+    {% endfor %}
+  </div>
+</div>
+<p id="no-elements" class="empty-state" hidden>Nessun elemento corrisponde alla ricerca.</p>
+<p class="table-note">Le serie dei lantanidi e degli attinidi sono mostrate separatamente sotto la tavola.</p>
+{% endblock %}

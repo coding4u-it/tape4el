@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Calcolo massa molare{% endblock %}
+{% block content %}
+<section class="page-heading">
+  <div>
+    <p class="eyebrow">Strumento</p>
+    <h1>Calcolo della massa molare</h1>
+    <p class="muted">Inserisci una formula con parentesi tonde o quadre. Sono supportati anche i sali idrati, ad esempio CuSO₄·5H₂O.</p>
+  </div>
+</section>
+<section class="content-card calculator-card">
+  <form method="post" class="formula-form">
+    <label for="formula">Formula chimica</label>
+    <div class="formula-row">
+      <input id="formula" name="formula" value="{{ formula }}" maxlength="100" placeholder="Es. Ca(OH)2 oppure Al2(SO4)3" required>
+      <button class="button button-primary" type="submit">Calcola</button>
+    </div>
+    <p class="form-hint">Usa i simboli degli elementi con la maiuscola corretta: H₂O si scrive H2O.</p>
+  </form>
+  {% if error %}
+    <p class="alert alert-error" role="alert">{{ error }}</p>
+  {% endif %}
+  {% if result %}
+    <div class="result-panel" aria-live="polite">
+      <h2>Risultato per <span class="chemical-formula">{{ formula }}</span></h2>
+      <div class="table-scroll">
+        <table class="data-table">
+          <thead><tr><th>Elemento</th><th>Quantità</th><th>Massa atomica</th><th>Massa parziale</th></tr></thead>
+          <tbody>
+            {% for item in result.breakdown %}
+              <tr>
+                <td>{{ item.name }} ({{ item.symbol }})</td>
+                <td>{{ item.count }}</td>
+                <td>{{ "%.5f"|format(item.atomic_mass) }}</td>
+                <td>{{ "%.5f"|format(item.partial_mass) }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+          <tfoot><tr><th colspan="3">Massa molare</th><th>{{ "%.5f"|format(result.total_mass) }} g/mol</th></tr></tfoot>
+        </table>
+      </div>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}

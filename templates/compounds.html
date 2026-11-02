@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Composti inorganici{% endblock %}
+{% block content %}
+<section class="page-heading">
+  <div>
+    <p class="eyebrow">Database chimico</p>
+    <h1>Composti inorganici</h1>
+    <p class="muted">Consulta i composti binari, ternari e quaternari presenti nel database del progetto.</p>
+  </div>
+</section>
+<section class="content-card">
+  <form class="compound-filters" method="get">
+    <label>Composti
+      <select name="kind">
+        {% for kind in kinds %}
+          <option value="{{ kind }}" {{ "selected" if kind == selected_kind else "" }}>{{ kind|capitalize }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>Elemento
+      <select name="element">
+        {% for symbol in symbols %}
+          <option value="{{ symbol }}" {{ "selected" if symbol == selected_symbol else "" }}>{{ symbol }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>Tipologia
+      <select name="category">
+        <option value="">Tutte le tipologie</option>
+        {% for category in categories %}
+          <option value="{{ category.ID }}" {{ "selected" if category.ID|string == selected_category else "" }}>{{ category.nome }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label class="compound-search">Cerca
+      <input name="q" value="{{ search }}" maxlength="100" placeholder="Formula o nome">
+    </label>
+    <button class="button button-primary" type="submit">Filtra</button>
+  </form>
+  <div class="results-heading">
+    <h2>Risultati</h2>
+    <span>{{ total }} composti · pagina {{ page }} di {{ page_count }}</span>
+  </div>
+  {% if results %}
+    <div class="table-scroll">
+      <table class="data-table compounds-table">
+        <thead><tr><th>Formula</th><th>Nome tradizionale</th><th>Nome IUPAC</th><th>Tipologia</th><th>Reazione</th><th>Massa molare</th></tr></thead>
+        <tbody>
+          {% for compound in results %}
+            <tr>
+              <td class="chemical-formula">{{ compound.formula }}</td>
+              <td>{{ compound.nomeTradizionale }}</td>
+              <td>{{ compound.nomeIUPAC }}</td>
+              <td>{{ compound.tipologia }}</td>
+              <td>{{ compound.REAZIONE }}</td>
+              <td>{{ compound.MM }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% if page_count > 1 %}
+      <nav class="pagination" aria-label="Pagine dei risultati">
+        {% if page > 1 %}
+          <a class="button button-secondary" href="{{ url_for('compounds', kind=selected_kind, element=selected_symbol, category=selected_category, q=search, page=page - 1) }}">← Precedente</a>
+        {% endif %}
+        <span>Pagina {{ page }} / {{ page_count }}</span>
+        {% if page < page_count %}
+          <a class="button button-secondary" href="{{ url_for('compounds', kind=selected_kind, element=selected_symbol, category=selected_category, q=search, page=page + 1) }}">Successiva →</a>
+        {% endif %}
+      </nav>
+    {% endif %}
+  {% else %}
+    <p class="empty-state">Nessun composto trovato con i filtri selezionati.</p>
+  {% endif %}
+</section>
+{% endblock %}

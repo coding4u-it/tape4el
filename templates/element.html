@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}{{ element.Nome }} ({{ element.Simbolo }}){% endblock %}
+{% block content %}
+<p><a class="back-link" href="{{ url_for('index') }}">← Torna alla tavola periodica</a></p>
+<section class="element-detail">
+  <div class="element-hero" style="--tile-color: {{ element.default_color }}">
+    <span class="atomic-number">Numero atomico {{ element.NumAtomico }}</span>
+    <strong>{{ element.Simbolo }}</strong>
+    <span>{{ element.Nome }}</span>
+    <span>Massa atomica: {{ element.MM }}</span>
+  </div>
+  <div class="detail-copy">
+    <p class="eyebrow">Scheda dell'elemento</p>
+    <h1>{{ element.Nome }}</h1>
+    <p class="muted">{{ element.Configurazione }}</p>
+    <div class="detail-actions">
+      <a class="button button-primary" href="https://it.wikipedia.org/wiki/{{ wikipedia_name }}" target="_blank" rel="noopener noreferrer">Apri la pagina Wikipedia</a>
+      <a class="button button-secondary" href="{{ url_for('calculator', _anchor='formula') }}">Calcola una massa molare</a>
+    </div>
+  </div>
+</section>
+<section class="content-card">
+  <h2>Proprietà</h2>
+  <dl class="properties">
+    {% for label, value in fields %}
+      <div><dt>{{ label }}</dt><dd>{{ value if value not in (none, "") else "—" }}</dd></div>
+    {% endfor %}
+  </dl>
+</section>
+<section class="content-card image-card">
+  <h2>Configurazione elettronica</h2>
+  <img src="{{ url_for('assets', asset_type='imgEl', filename=element.NumAtomico|string + '.jpg') }}" alt="Schema elettronico di {{ element.Nome }}" loading="lazy">
+</section>
+{% endblock %}
