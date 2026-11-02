@@ -1,5 +1,8 @@
 import unittest
+import sys
+from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import app as webapp
 
 
@@ -51,7 +54,7 @@ class WebApplicationTests(unittest.TestCase):
 
     def test_about_and_existing_assets(self):
         self.assertEqual(self.client.get("/about").status_code, 200)
-        with self.client.get("/assets/img/8.jpg") as response:
+        with self.client.get("/assets/imgEl/8.jpg") as response:
             self.assertEqual(response.status_code, 200)
 
 

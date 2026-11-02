@@ -9,7 +9,7 @@ from flask import Flask, abort, g, render_template, request, send_from_directory
 
 
 ROOT = Path(__file__).resolve().parent
-DATABASE = Path(os.environ.get("PERIODIC_TABLE_DB", ROOT / "src/config/elementi.db"))
+DATABASE = Path(os.environ.get("PERIODIC_TABLE_DB", ROOT / "data/elementi.db"))
 PAGE_SIZE = 50
 COMPOUND_KINDS = {"binario", "ternario", "quaternario"}
 
@@ -185,9 +185,9 @@ def safe_wikipedia_name(name):
 
 @app.get("/assets/<asset_type>/<path:filename>")
 def assets(asset_type, filename):
-    if asset_type not in {"img", "imgEl", "config"}:
+    if asset_type not in {"imgEl", "config"}:
         abort(404)
-    return send_from_directory(ROOT / "src" / asset_type, filename)
+    return send_from_directory(ROOT / "static" / asset_type, filename)
 
 
 @app.get("/")
